@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Store.Data.Context;
 using Store.Repostory.Interfaces;
 using Store.Repostory.Repostory;
+using Store.Services.Products;
+using Store.Services.Products.DTO;
 using Store.Web.Hellper;
 
 namespace Store.Web
@@ -24,6 +26,8 @@ namespace Store.Web
                 options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"));
             });
             builder.Services.AddScoped<IUintOfWork, UintOfWork>();
+            builder.Services.AddAutoMapper(typeof(ProductProfile));
+            builder.Services.AddScoped<IProductServices, ProductServices>();   
             var app = builder.Build();
             await ApplySeeding.ApplySeedindAsync(app);
 
@@ -37,7 +41,7 @@ namespace Store.Web
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseStaticFiles();
 
             app.MapControllers();
 
