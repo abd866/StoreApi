@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Store.Data.Entities;
 using Store.Repostory.Interfaces;
+using Store.Repostory.Specification.Products;
+using Store.Services.Hellper;
 using Store.Services.Products.DTO;
 using System;
 using System.Collections.Generic;
@@ -27,11 +29,14 @@ namespace Store.Services.Products
             return mappedBrand;
         }
 
-        public async  Task<IReadOnlyList<ProductDetailsDTO>> GetAllProductsAsync()
+        public async  Task<PagingedRusltDTO<ProductDetailsDTO>> GetAllProductsAsync(ProductsSpecification input)
         {
-            var Product  = await _uintOfWork.Repostory<Product, int>().GetAllAsync();
+            var spec=new ProductsWithSpecification(input);
+            var Product  = await _uintOfWork.Repostory<Product, int>().GetWithSpecificationAllAsync(spec);
+            var countSpecification = new ProductWithCountSpecification(input);
+            var count = await _uintOfWork.Repostory<Product, int>().GetCountSpecifcationAsync(countSpecification);
             var mappedProduct = _mapper.Map<IReadOnlyList<ProductDetailsDTO>>(Product);
-            return mappedProduct;
+            return new PagingedRusltDTO<ProductDetailsDTO>((int)input.pageIndex,input.pagesize, count,mappedProduct);
         }
 
         public  async Task<IReadOnlyList<BrandTypeDTO>> GetAllTypesAsync()
@@ -45,7 +50,8 @@ namespace Store.Services.Products
         {
             if(id is null)
                 throw new Exception("Id is null");
-            var product =await _uintOfWork.Repostory<Product,int>().GetByIdAsync(id.Value);
+            var specs= new ProductsWithSpecification(id);
+            var product =await _uintOfWork.Repostory<Product,int>().GetWithSpecificationByIdAsync(specs);
             var mappedProduct=_mapper.Map<ProductDetailsDTO>(product);
             return mappedProduct;
         }

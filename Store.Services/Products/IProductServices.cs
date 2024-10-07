@@ -1,4 +1,6 @@
-﻿using Store.Services.Products.DTO;
+﻿using Store.Repostory.Specification.Products;
+using Store.Services.Hellper;
+using Store.Services.Products.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Store.Services.Products
     public interface IProductServices
     {
         Task<ProductDetailsDTO> GetProductByIdAsync(int? id);
-        Task<IReadOnlyList<ProductDetailsDTO>> GetAllProductsAsync();
+        Task<PagingedRusltDTO<ProductDetailsDTO>> GetAllProductsAsync(ProductsSpecification specs);
         Task<IReadOnlyList<BrandTypeDTO>> GetAllPrandsAsync();
         Task<IReadOnlyList<BrandTypeDTO>> GetAllTypesAsync();
     }

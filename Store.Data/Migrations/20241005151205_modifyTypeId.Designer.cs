@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Store.Data.Context;
 
@@ -11,9 +12,11 @@ using Store.Data.Context;
 namespace Store.Data.Migrations
 {
     [DbContext(typeof(StoreDBContext))]
-    partial class StoreDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241005151205_modifyTypeId")]
+    partial class modifyTypeId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,13 +112,13 @@ namespace Store.Data.Migrations
                         .WithMany()
                         .HasForeignKey("BrandId");
 
-                    b.HasOne("Store.Data.Entities.ProductType", "Type")
+                    b.HasOne("Store.Data.Entities.ProductType", "type")
                         .WithMany()
                         .HasForeignKey("TypeId");
 
                     b.Navigation("Brand");
 
-                    b.Navigation("Type");
+                    b.Navigation("type");
                 });
 #pragma warning restore 612, 618
         }

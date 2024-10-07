@@ -19,7 +19,7 @@ namespace Store.Repostory
                 if (Context.ProductBrands !=null && !Context.ProductBrands.Any())
                 {
 
-                    var BrandsDta = File.ReadAllText("../Store.Repostory/SeedData/Brands.jason");
+                    var BrandsDta = File.ReadAllText("../Store.Repostory/SeedData/brands.json");
                     var brand = JsonSerializer.Deserialize<List<ProductBrand>>(BrandsDta);
                     if (brand is not null)
                         await Context.ProductBrands.AddRangeAsync(brand);
@@ -27,7 +27,7 @@ namespace Store.Repostory
                 if (Context.ProductType != null && !Context.ProductType.Any())
                 {
 
-                    var BrandsType = File.ReadAllText("../Store.Repostory/SeedData/types.jason");
+                    var BrandsType = File.ReadAllText("../Store.Repostory/SeedData/types.json");
                     var type = JsonSerializer.Deserialize<List<ProductType>>(BrandsType);
                     if (type is not null)
                         await Context.ProductType.AddRangeAsync(type);
@@ -35,7 +35,7 @@ namespace Store.Repostory
                 if (Context.Products != null && !Context.Products.Any())
                 {
 
-                    var ProductsDta = File.ReadAllText("../Store.Repostory/SeedData/producst.jason");
+                    var ProductsDta = File.ReadAllText("../Store.Repostory/SeedData/products.json");
                     var product = JsonSerializer.Deserialize<List<Product>>(ProductsDta);
                     if (product is not null)
                         await Context.Products.AddRangeAsync(product);

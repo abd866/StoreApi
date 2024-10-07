@@ -2,6 +2,7 @@
 using Store.Data.Context;
 using Store.Data.Entities;
 using Store.Repostory.Interfaces;
+using Store.Repostory.Specification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,19 @@ namespace Store.Repostory.Repostory
         public async Task<TEntity> GetByIdAsync(TKey? Id)
              => await _context.Set<TEntity>().FindAsync(Id);
 
+       
 
         public void Update(TEntity entity)
               => _context.Set<TEntity>().Update(entity);
+        public async Task<IReadOnlyList<TEntity>> GetWithSpecificationAllAsync(ISpecification<TEntity> SPEC)
+            =>await SpecificationEvaluater<TEntity,TKey>.GetQeury(_context.Set<TEntity>(), SPEC).ToListAsync();
 
+        public async Task<TEntity> GetWithSpecificationByIdAsync(ISpecification<TEntity> SPEC)
+           => await SpecificationEvaluater<TEntity, TKey>.GetQeury(_context.Set<TEntity>(), SPEC).FirstOrDefaultAsync();
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> SPEC)
+            => SpecificationEvaluater<TEntity, TKey>.GetQeury(_context.Set<TEntity>(), SPEC);
+
+        public async  Task<int> GetCountSpecifcationAsync(ISpecification<TEntity> SPEC)
+        => await ApplySpecification(SPEC).CountAsync();
     }
 }
