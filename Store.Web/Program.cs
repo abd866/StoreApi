@@ -1,11 +1,16 @@
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Store.Data.Context;
 using Store.Repostory.Interfaces;
 using Store.Repostory.Repostory;
+using Store.Services.HandlleResponse;
 using Store.Services.Products;
 using Store.Services.Products.DTO;
+using Store.Web.Extentions;
 using Store.Web.Hellper;
+using Store.Web.Middlware;
 
 namespace Store.Web
 {
@@ -25,8 +30,13 @@ namespace Store.Web
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"));
             });
-            builder.Services.AddScoped<IUintOfWork, UintOfWork>();
-            builder.Services.AddAutoMapper(typeof(ProductProfile));
+            builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
+            {
+                var configration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(configration);
+
+            });
+            builder.Services.ApplicationServicesCollections();
             builder.Services.AddScoped<IProductServices, ProductServices>();   
             var app = builder.Build();
             await ApplySeeding.ApplySeedindAsync(app);
@@ -37,7 +47,7 @@ namespace Store.Web
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExeptionMiddlware>();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

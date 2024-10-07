@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Store.Repostory.Specification.Products;
 using Store.Services.Products;
 using Store.Services.Products.DTO;
+using Store.Web.Hellper;
 
 namespace Store.Web.Controllers
 {
@@ -17,6 +18,7 @@ namespace Store.Web.Controllers
             _productServices = productServices;
         }
         [HttpGet]
+        [Cache(10)]
         public async Task<ActionResult<IReadOnlyList<BrandTypeDTO>>> GetAllBrand()
             => Ok(await _productServices.GetAllPrandsAsync());
 
