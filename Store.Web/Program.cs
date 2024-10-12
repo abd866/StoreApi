@@ -30,6 +30,10 @@ namespace Store.Web
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"));
             });
+            builder.Services.AddDbContext<StoreIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
             builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
             {
                 var configration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
@@ -37,6 +41,7 @@ namespace Store.Web
 
             });
             builder.Services.ApplicationServicesCollections();
+            builder.Services.AddIdentityServices();
             builder.Services.AddScoped<IProductServices, ProductServices>();   
             var app = builder.Build();
             await ApplySeeding.ApplySeedindAsync(app);
@@ -49,7 +54,7 @@ namespace Store.Web
             }
             app.UseMiddleware<ExeptionMiddlware>();
             app.UseHttpsRedirection();
-
+            app.UseAuthentication(); 
             app.UseAuthorization();
             app.UseStaticFiles();
 
